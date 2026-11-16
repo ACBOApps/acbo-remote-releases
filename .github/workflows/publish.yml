@@ -19,14 +19,12 @@ jobs:
           WANT=$(cat release/sha256.txt)
           GOT=$(sha256sum ACBO-Remote-Setup-$V.exe | cut -d' ' -f1)
           [ "$WANT" = "$GOT" ] || { echo "SHA-256 mismatch"; exit 1; }
-          # Αντίγραφο με το παλιό όνομα, ώστε να το βρίσκει ο έλεγχος ενημερώσεων της έκδοσης 0.3.0.
-          cp ACBO-Remote-Setup-$V.exe ACBO-Remote-Admin-Setup-$V.exe
           echo "V=$V" >> "$GITHUB_ENV"
       - name: Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh release create "v$V" "ACBO-Remote-Setup-$V.exe" "ACBO-Remote-Admin-Setup-$V.exe" \
+          gh release create "v$V" "ACBO-Remote-Setup-$V.exe" \
             --repo "$GITHUB_REPOSITORY" --target main --title "ACBO Remote $V" --notes-file release/notes.txt --latest
           git push origin --delete "$GITHUB_REF_NAME"
